@@ -1,5 +1,3 @@
-
-
 let start = {
     tilesize: 30,
     buttons: [
@@ -66,19 +64,42 @@ let start = {
         cont.id = 'gamecont'
         cont.classList.add('container')
         document.getElementById('main').appendChild(cont)
+        ck.sort()
         main.createBombCounter()
         main.createTimer()
         main.generateTiles()
         main.appendButton()
+        main.createLeaderboard()
         main.leftClickListeners()
     },
 }
+
+let ck = {
+    cookies: [],
+    sort() {
+        if (!document.cookie) return
+        this.cookies = []
+        for (const e of document.cookie.split(';').filter(a => a.split(';')[0].includes('record'))) {
+            this.cookies.push({
+                name: e.split('=')[1].split('|')[0],
+                time: e.split('=')[1].split('|')[1],
+                mode: e.split('=')[1].split('|')[2]
+            })
+        }
+        this.cookies.sort((a, b) => a.time - b.time)
+    },
+    get(str) {
+        return this.cookies.filter(a => a.mode == str)
+    }
+}
+
 let main = {
     boardheight: null,
     boardwidth: null,
     bombcount: null,
     gamearr: null,
     numberColors: ['none', 'blue', 'green', 'red', 'purple', 'maroon', 'turquoise', 'black', 'gray'],
+    //numberColors: ['var(--darkgray)', 'var(--gray)', 'var(--darkgray)', 'var(--gray)', 'var(--darkgray)', 'var(--gray)', 'var(--darkgray)', 'var(--gray)', 'var(--darkgray)', 'var(--gray)',],
     setVariables(width, height, mines) {
         this.boardwidth = width
         this.boardheight = height
@@ -95,6 +116,7 @@ let main = {
         cont.appendChild(top)
         let bc = document.createElement('div')
         bc.id = 'bc'
+        bc.classList.add('box')
         bc.innerHTML = `Miny: ${main.bombcount}`
         top.appendChild(bc)
     },
@@ -104,6 +126,7 @@ let main = {
         cont.style.width = `${start.tilesize * this.boardwidth + 9}px`
         let tim = document.createElement('div')
         tim.id = 'tim'
+        tim.classList.add('box')
         top.appendChild(tim)
         let text = document.createElement('span')
         text.innerHTML = 'Czas:'
@@ -152,8 +175,63 @@ let main = {
         button.innerHTML = 'RESET'
         cont.appendChild(button)
     },
+    createLeaderboard() {
+        let lbcont = document.createElement('div')
+        lbcont.classList.add('container')
+        lbcont.id = 'lbcont'
+        document.getElementById('main').appendChild(lbcont)
+        let top = document.createElement('div')
+        top.id = 'lbheader'
+        top.classList.add('box')
+        top.innerHTML = `Ranking ${this.boardwidth}x${this.boardheight} ${this.bombcount}min`
+        lbcont.appendChild(top)
+        let lb = document.createElement('div')
+        lb.id = 'leaderboard'
+        lbcont.appendChild(lb)
+        let arr = ck.get(`${this.boardwidth}x${this.boardheight} ${this.bombcount}min`)
+        let lgt = arr.length < 10 ? arr.length : 10
+        if (lgt == 0) {
+            lb.innerHTML = `<div style='grid-column:1 / span 3; display:flex; align-items:center; justify-content:center;font-size:30px;'>Brak rekordów</p>`
+            return
+        }
+        lb.style.gridTemplateRows = `repeat(${lgt + 1},50px)`
+        for (let i = 1; i <= lgt + 1; i++) {
+            for (let j = 1; j <= 3; j++) {
+                let el = document.createElement('div')
+                el.style.gridRowStart = `${i}`
+                el.style.gridColumnStart = `${j}`
+                el.classList.add('lbtile')
+                el.classList.add(`col${j}`)
+                if (i == 1) {
+                    switch (j) {
+                        case 1:
+                            el.innerHTML = 'Lp.'
+                            break
+                        case 2:
+                            el.innerHTML = 'Nick'
+                            break
+                        case 3:
+                            el.innerHTML = 'Czas'
+                    }
+                }
+                else {
+                    switch (j) {
+                        case 1:
+                            el.innerHTML = i - 1
+                            break
+                        case 2:
+                            el.innerHTML = arr[i - 2]?.name ? decodeURIComponent(arr[i - 2].name) : ''
+                            break
+                        case 3:
+                            el.innerHTML = arr[i - 2]?.time ? new Date(Number(arr[i - 2].time)).toISOString().substr(14, 9) : '-'
+                    }
+                }
+                lb.appendChild(el)
+            }
+        }
+    },
     resetGame() {
-        time.stop()
+        timer.stop()
         this.clearSite()
         start.createInputs()
     },
@@ -186,17 +264,25 @@ let main = {
         return true
     },
     playerWin() {
-        let t = time.stop()
+        let t = timer.stop()
         this.showmines()
         document.getElementById('bc').innerHTML = `Miny: 0`
-        alert(`Wygrałeś! Twój czas gry: ${t}`)
+        let name = prompt(`Wygrałeś! Twój czas gry: ${new Date(t).toISOString().substr(14, 9)}\n\nTwoje imię:`)
+        let time = new Date(Date.now() + 1000 * 60 * 60 * 24)
+        let count = document.cookie.split(';').length
+        if (count == 1 && !document.cookie)
+            count = 0
+        document.cookie = `record${count + 1}=${encodeURIComponent(name)}|${t}|${this.boardwidth}x${this.boardheight} ${this.bombcount}min;expires=${time.toUTCString()}`
     },
     playerLose(el) {
-        let t = time.stop()
+        let t = timer.stop()
         this.showmines()
         el.style.backgroundImage = `url('gfx/bomb.png')`
-        alert(`Przegrałeś. Twój czas gry: ${t}`)
+        alert(`Przegrałeś. Twój czas gry: ${new Date(t).toISOString().substr(14, 9)}`)
     },
+    // popUp(){
+
+    // },
     showmines() {
         let els = document.querySelectorAll('.tile')
         for (let i = 0; i < els.length; i++) {
@@ -214,7 +300,7 @@ let main = {
         else document.getElementById('bc').innerHTML = `Miny: ${temp + 1}`
     }
 }
-let time = {
+let timer = {
     startTime: null,
     count: null,
     isRunning: false,
@@ -235,9 +321,10 @@ let time = {
     },
     stop() {
         this.isRunning = false
-        return new Date(Date.now() - this.startTime).toISOString().substr(14, 9)
+        return Date.now() - this.startTime
     }
 }
+
 let lc = {
     leftClick(el) {
         if (el.isTrusted) el = this
@@ -247,7 +334,7 @@ let lc = {
         if (main.gamearr.length == 0) {
             gen.generateGamearr(x, y)
             main.rightClickListeners()
-            time.start()
+            timer.start()
         }
         if (main.gamearr[x][y] == 0) lc.showTiles(x, y)
         else if (main.gamearr[x][y] != 'x') lc.showOneTile(x, y)
@@ -260,7 +347,7 @@ let lc = {
     showTiles(x, y) {
         main.gamearr[x][y] = 'o'
         let el = main.getTileByPosition(x, y)
-        el.style.background = 'lightgray'
+        el.style.background = 'var(--lgray)'
         el.style.borderTop = `1px solid black`
         el.style.borderLeft = `1px solid black`
         el.removeEventListener('click', this.leftClick)
@@ -281,7 +368,7 @@ let lc = {
         el.removeEventListener('click', this.leftClick)
         el.removeEventListener('contextmenu', rc.rightClick)
         el.addEventListener('click', this.secondLeftClick)
-        el.style.background = 'lightgray'
+        el.style.background = 'var(--lgray)'
         el.style.borderTop = `1px solid black`
         el.style.borderLeft = `1px solid black`
         el.innerHTML = main.gamearr[x][y]

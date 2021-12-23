@@ -1,5 +1,19 @@
+:root{
+    --darkgray:rgb(70, 70, 70);
+    --gray:rgb(173, 173, 173);
+    --lgray: rgb(211,211,211);
+    --caucasian:rgb(235, 235, 235);
+}
+
+/* :root{
+    --darkgray:rgb(91 206 250);
+    --gray:rgb(245 169 184);
+    --lgray: rgb(255 255 255);
+    --caucasian:rgb(255 255 255);
+} */
+
 body{
-    background-color: rgb(70, 70, 70);
+    background-color: var(--darkgray);
     margin:0;
     padding:0;
 }
@@ -7,15 +21,14 @@ body{
     height:100vh;
     width:100vw;
     display: flex;
-    justify-content: center;
+    justify-content:center;
     align-items: center;
-
 }
 .container{
     margin:5px;
     border: 3px solid black;
     border-radius:10px;
-    background-color: rgb(173, 173, 173);
+    background-color: var(--gray);
 }
 
 #startcont{
@@ -35,7 +48,7 @@ body{
     border-radius:10px;
     border:3px solid black;
     text-align: center;
-    background-color: rgb(235, 235, 235);
+    background-color: var(--caucasian);
     user-select: none;
 }
 
@@ -79,39 +92,34 @@ body{
     flex-flow:column;
     justify-content: center;
     margin:0;
+    min-width: max-content;
 }
 #top{
     height:70px;
     display: flex;
     flex-flow: column wrap;
+    min-width: 300px;
 }
-#bc{
+
+.box{
     margin:5px;
     border:3px solid black;
     width:130px;
     border-radius:10px;
-    background-color: lightgray;
+    background-color: var(--lgray);
     height:43px;
     display: flex;
-    justify-content: center;
     align-items: center;
     font-weight: bold;
     font-size:20px;
+}
+#bc{
+    justify-content: center;
 }
 
 #tim{
-    align-self: flex-end;
-    margin:5px;
-    border:3px solid black;
-    width:130px;
-    border-radius:10px;
-    background-color: lightgray;
-    height:43px;
-    display: flex;
     justify-content:space-evenly;
-    align-items: center;
-    font-weight: bold;
-    font-size:20px;
+    align-self: flex-end;
 }
 
 #gameboard{
@@ -138,4 +146,43 @@ body{
     align-self: center;
     margin-bottom: 5px;
     width: 150px;
- }
+}
+
+#lbcont{
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    width: 330px;
+    padding: 10px;
+    margin-left: 30px;
+}
+
+#lbheader{
+    margin-top: 15px;
+    width:270px;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#leaderboard{
+    width:300px;
+    align-self: center;
+    display: grid;
+    grid-template-columns: 50px 125px 125px;
+    justify-content: center;
+    margin:15px;
+    border:3px solid black;
+    background: var(--caucasian);
+}
+
+.lbtile{
+    border:1px solid black;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
