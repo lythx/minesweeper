@@ -10,7 +10,42 @@
     <link rel='stylesheet' href='styles.css'>
 </head>
 
+<div id='main'></div>
+
 <body>
 </body>
 
 </html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=], initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // ciastko sesyjne
+        /*
+        document.cookie = "nazwa=zawartość";
+        console.log(document.cookie)
+        document.cookie = "nazwa=imie.nazwisko.176";
+        document.cookie = "nazwa2=imie2.nazwisko2.186";
+        console.log(document.cookie);
+        console.log(document.cookie.split("; ")[1].split("=")[1].split(".")[2]) // 176
+        */
+        //ciastko sesyjne
+        let time = new Date(Date.now() + 1000 * 60 * 60 * 2);
+        console.log(time);
+        document.cookie = "trwale=zawartosc;expires=" + time.toUTCString();
+        document.cookie = "trwale=" + encodeURIComponent(";@#$@#$#$") + ";expires=" + time.toUTCString(); //decodeURIComponent
+    </script>
+</head>
+ 
+<body>
+ 
+</body>
+ 
+</html> -->
