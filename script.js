@@ -64,7 +64,6 @@ let start = {
         cont.id = 'gamecont'
         cont.classList.add('container')
         document.getElementById('main').appendChild(cont)
-        ck.sort()
         main.createBombCounter()
         main.createTimer()
         main.generateTiles()
@@ -89,6 +88,7 @@ let ck = {
         this.cookies.sort((a, b) => a.time - b.time)
     },
     get(str) {
+        this.sort()
         return this.cookies.filter(a => a.mode == str)
     }
 }
@@ -99,7 +99,6 @@ let main = {
     bombcount: null,
     gamearr: null,
     numberColors: ['none', 'blue', 'green', 'red', 'purple', 'maroon', 'turquoise', 'black', 'gray'],
-    //numberColors: ['var(--darkgray)', 'var(--gray)', 'var(--darkgray)', 'var(--gray)', 'var(--darkgray)', 'var(--gray)', 'var(--darkgray)', 'var(--gray)', 'var(--darkgray)', 'var(--gray)',],
     setVariables(width, height, mines) {
         this.boardwidth = width
         this.boardheight = height
@@ -201,7 +200,6 @@ let main = {
                 el.style.gridRowStart = `${i}`
                 el.style.gridColumnStart = `${j}`
                 el.classList.add('lbtile')
-                el.classList.add(`col${j}`)
                 if (i == 1) {
                     switch (j) {
                         case 1:

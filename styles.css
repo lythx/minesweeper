@@ -5,13 +5,6 @@
     --caucasian:rgb(235, 235, 235);
 }
 
-/* :root{
-    --darkgray:rgb(91 206 250);
-    --gray:rgb(245 169 184);
-    --lgray: rgb(255 255 255);
-    --caucasian:rgb(255 255 255);
-} */
-
 body{
     background-color: var(--darkgray);
     margin:0;
